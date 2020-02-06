@@ -16,6 +16,7 @@
  */
 
 #include <array>
+#include <boost/multiprecision/cpp_dec_float.hpp>
 #include <chrono>
 #include <functional>
 #include <limits>
@@ -617,6 +618,19 @@ bool Node::ProcessFinalBlockCore(const bytes& message, unsigned int offset,
                        << m_mediator.m_selfPeer.GetPrintableIPAddress() << "]["
                        << txBlock.GetHeader().GetBlockNum() << "] FRST");
 
+  if (LOOKUP_NODE_MODE) {
+    LOG_STATE("[TXPCK] Size: " << message.size() << " BlockNum: "
+                               << txBlock.GetHeader().GetBlockNum());
+
+    uint64_t timeDiff = txBlock.GetTimestamp() -
+                        m_mediator.m_txBlockChain.GetLastBlock().GetTimestamp();
+    LOG_STATE("[TXTIME] " << timeDiff);
+    cpp_dec_float_50 numTxns(txBlock.GetHeader().GetNumTxs());
+    numTxns = numTxns * 1000000;
+
+    LOG_STATE("[TXTPS] " << numTxns / timeDiff);
+  }
+
   // Verify the co-signature
   if (!VerifyFinalBlockCoSignature(txBlock)) {
     LOG_EPOCH(WARNING, m_mediator.m_currentEpochNum,
@@ -1126,6 +1140,13 @@ bool Node::ProcessMBnForwardTransaction(const bytes& message,
       << "] RECVD MB & TXN BODIES #"
       << entry.m_microBlock.GetHeader().GetEpochNum() << " shard "
       << entry.m_microBlock.GetHeader().GetShardId());
+
+  if (LOOKUP_NODE_MODE) {
+    LOG_STATE("[MBPCKT] Size:"
+              << message.size()
+              << " epoch: " << entry.m_microBlock.GetHeader().GetEpochNum()
+              << " shard:" << entry.m_microBlock.GetHeader().GetShardId());
+  }
 
   if ((m_mediator.m_txBlockChain.GetLastBlock().GetHeader().GetBlockNum() <
        entry.m_microBlock.GetHeader()
