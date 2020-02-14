@@ -1684,7 +1684,7 @@ Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
     MinerInfoDSComm minerInfoDSComm;
     if (!BlockStorage::GetBlockStorage().GetMinerInfoDSComm(initDSBlockNum, minerInfoDSComm))
     {
-      throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get DS committee miner info");
+      throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get DS committee miner info for block " + boost::lexical_cast<std::string>(initDSBlockNum));
     }
 
     // From the entry after that until the requested block
@@ -1706,7 +1706,7 @@ Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
       MinerInfoDSComm tmp;
       if (!BlockStorage::GetBlockStorage().GetMinerInfoDSComm(currDSBlockNum, tmp))
       {
-        throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get DS committee miner info");
+        throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get DS committee miner info for block " + boost::lexical_cast<std::string>(currDSBlockNum));
       }
 
       // Remove the public keys of the ejected nodes in that entry from the DS committee
@@ -1727,7 +1727,7 @@ Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
     MinerInfoShards minerInfoShards;
     if (!BlockStorage::GetBlockStorage().GetMinerInfoShards(requestedDSBlockNum, minerInfoShards))
     {
-      throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get shards miner info");
+      throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get shards miner info for block " + boost::lexical_cast<std::string>(requestedDSBlockNum));
     }
 
     Json::Value _json;
