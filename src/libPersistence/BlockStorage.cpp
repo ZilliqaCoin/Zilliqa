@@ -1277,7 +1277,11 @@ bool BlockStorage::GetMinerInfoDSComm(const uint64_t& dsBlockNum, MinerInfoDSCom
     dataStr = m_minerInfoDSCommDB->Lookup(dsBlockNum, found);
   }
   if (found) {
-    Messenger::GetMinerInfoDSComm(bytes(dataStr.begin(), dataStr.end()), 0, entry);
+    if (!Messenger::GetMinerInfoDSComm(bytes(dataStr.begin(), dataStr.end()), 0, entry))
+    {
+      LOG_GENERAL(WARNING, "Messenger::GetMinerInfoDSComm failed");
+      found = false;
+    }
   }
 
   return found;
@@ -1315,7 +1319,11 @@ bool BlockStorage::GetMinerInfoShards(const uint64_t& dsBlockNum, MinerInfoShard
     dataStr = m_minerInfoShardsDB->Lookup(dsBlockNum, found);
   }
   if (found) {
-    Messenger::GetMinerInfoShards(bytes(dataStr.begin(), dataStr.end()), 0, entry);
+    if (!Messenger::GetMinerInfoShards(bytes(dataStr.begin(), dataStr.end()), 0, entry))
+    {
+      LOG_GENERAL(WARNING, "Messenger::GetMinerInfoShards failed");
+      found = false;
+    }
   }
 
   return found;
