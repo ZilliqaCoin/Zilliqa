@@ -27,6 +27,7 @@
 #include "libData/BlockData/Block/FallbackBlockWShardingStructure.h"
 #include "libData/CoinbaseData/CoinbaseStruct.h"
 #include "libData/MiningData/DSPowSolution.h"
+#include "libData/MiningData/MinerInfo.h"
 #include "libDirectoryService/DirectoryService.h"
 #include "libNetwork/Peer.h"
 #include "libNetwork/ShardStruct.h"
@@ -916,5 +917,11 @@ class Messenger {
   static bool GetLookupSetCosigsRewardsFromSeed(
       const bytes& src, const unsigned int offset,
       std::vector<CoinbaseStruct>& cosigrewards, PubKey& senderPubkey);
+
+  static bool SetMinerInfoDSComm(bytes& dst, const unsigned int offset, const MinerInfoDSComm& minerInfo);
+  static bool GetMinerInfoDSComm(const bytes& src, const unsigned int offset, MinerInfoDSComm& minerInfo);
+
+  static bool SetMinerInfoShards(bytes& dst, const unsigned int offset, const MinerInfoShards& minerInfo);
+  static bool GetMinerInfoShards(const bytes& src, const unsigned int offset, MinerInfoShards& minerInfo);
 };
 #endif  // ZILLIQA_SRC_LIBMESSAGE_MESSENGER_H_

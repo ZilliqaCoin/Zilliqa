@@ -8892,3 +8892,124 @@ bool Messenger::GetLookupSetCosigsRewardsFromSeed(
 
   return true;
 }
+
+bool Messenger::SetMinerInfoDSComm(bytes& dst, const unsigned int offset, const MinerInfoDSComm& minerInfo)
+{
+  LOG_MARKER();
+
+  ProtoMinerInfoDSComm result;
+  
+  for (const auto& dsnode : minerInfo.m_dsNodes)
+  {
+    ZilliqaMessage::ProtoMinerInfoDSComm::Node* protodsnode = result.add_dsnodes();
+    SerializableToProtobufByteArray(dsnode, *protodsnode->mutable_pubkey());
+  }
+
+  for (const auto& dsnode : minerInfo.m_dsNodesEjected)
+  {
+    ZilliqaMessage::ProtoMinerInfoDSComm::Node* protodsnode = result.add_dsnodesejected();
+    SerializableToProtobufByteArray(dsnode, *protodsnode->mutable_pubkey());
+  }
+
+  if (!result.IsInitialized()) {
+    LOG_GENERAL(WARNING, "ProtoMinerInfoDSComm initialization failed");
+    return false;
+  }
+
+  return SerializeToArray(result, dst, offset);
+}
+
+bool Messenger::GetMinerInfoDSComm(const bytes& src, const unsigned int offset, MinerInfoDSComm& minerInfo)
+{
+  LOG_MARKER();
+
+  if (offset >= src.size()) {
+    LOG_GENERAL(WARNING, "Invalid data and offset, data size "
+                             << src.size() << ", offset " << offset);
+    return false;
+  }
+
+  ProtoMinerInfoDSComm result;
+  result.ParseFromArray(src.data() + offset, src.size() - offset);
+
+  if (!result.IsInitialized()) {
+    LOG_GENERAL(WARNING, "ProtoMinerInfoDSComm initialization failed");
+    return false;
+  }
+
+  minerInfo.m_dsNodes.clear();
+  minerInfo.m_dsNodesEjected.clear();
+
+  for (const auto& protodsnode : result.dsnodes()) {
+    PubKey pubkey;
+    PROTOBUFBYTEARRAYTOSERIALIZABLE(protodsnode.pubkey(), pubkey);
+    minerInfo.m_dsNodes.emplace_back(pubkey);
+  }
+
+  for (const auto& protodsnode : result.dsnodesejected()) {
+    PubKey pubkey;
+    PROTOBUFBYTEARRAYTOSERIALIZABLE(protodsnode.pubkey(), pubkey);
+    minerInfo.m_dsNodesEjected.emplace_back(pubkey);
+  }
+
+  return true;
+}
+
+bool Messenger::SetMinerInfoShards(bytes& dst, const unsigned int offset, const MinerInfoShards& minerInfo)
+{
+  LOG_MARKER();
+
+  ProtoMinerInfoShards result;
+  
+  for (const auto& shard : minerInfo.m_shards)
+  {
+    ZilliqaMessage::ProtoMinerInfoShards::Shard* protoshard = result.add_shards();
+    protoshard->set_shardsize(shard.m_shardSize);
+    for (const auto& shardnode : shard.m_shardNodes)
+    {
+      ZilliqaMessage::ProtoMinerInfoShards::Node* protoshardnode = protoshard->add_shardnodes();
+      SerializableToProtobufByteArray(shardnode, *protoshardnode->mutable_pubkey());
+    }
+  }
+
+  if (!result.IsInitialized()) {
+    LOG_GENERAL(WARNING, "ProtoMinerInfoShards initialization failed");
+    return false;
+  }
+
+  return SerializeToArray(result, dst, offset);
+}
+
+bool Messenger::GetMinerInfoShards(const bytes& src, const unsigned int offset, MinerInfoShards& minerInfo)
+{
+  LOG_MARKER();
+
+  if (offset >= src.size()) {
+    LOG_GENERAL(WARNING, "Invalid data and offset, data size "
+                             << src.size() << ", offset " << offset);
+    return false;
+  }
+
+  ProtoMinerInfoShards result;
+  result.ParseFromArray(src.data() + offset, src.size() - offset);
+
+  if (!result.IsInitialized()) {
+    LOG_GENERAL(WARNING, "ProtoMinerInfoShards initialization failed");
+    return false;
+  }
+
+  minerInfo.m_shards.clear();
+
+  for (const auto& protoshard : result.shards()) {
+    MinerInfoShards::MinerInfoShard shard;
+    shard.m_shardSize = protoshard.shardsize();
+    for (const auto& protoshardnode : protoshard.shardnodes()) {
+      PubKey pubkey;
+      PROTOBUFBYTEARRAYTOSERIALIZABLE(protoshardnode.pubkey(), pubkey);
+      shard.m_shardNodes.emplace_back(pubkey);
+    }
+    minerInfo.m_shards.emplace_back(shard);
+  }
+
+  return true;
+}
