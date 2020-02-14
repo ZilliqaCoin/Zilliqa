@@ -1245,8 +1245,8 @@ bool BlockStorage::DeleteDiagnosticDataCoinbase(const uint64_t& dsBlockNum) {
   return result;
 }
 
-bool BlockStorage::PutMinerInfoDSComm(const uint64_t& dsBlockNum, const MinerInfoDSComm& entry)
-{
+bool BlockStorage::PutMinerInfoDSComm(const uint64_t& dsBlockNum,
+                                      const MinerInfoDSComm& entry) {
   LOG_MARKER();
 
   bytes data;
@@ -1266,8 +1266,8 @@ bool BlockStorage::PutMinerInfoDSComm(const uint64_t& dsBlockNum, const MinerInf
   return true;
 }
 
-bool BlockStorage::GetMinerInfoDSComm(const uint64_t& dsBlockNum, MinerInfoDSComm& entry)
-{
+bool BlockStorage::GetMinerInfoDSComm(const uint64_t& dsBlockNum,
+                                      MinerInfoDSComm& entry) {
   LOG_MARKER();
   bool found = false;
 
@@ -1277,8 +1277,8 @@ bool BlockStorage::GetMinerInfoDSComm(const uint64_t& dsBlockNum, MinerInfoDSCom
     dataStr = m_minerInfoDSCommDB->Lookup(dsBlockNum, found);
   }
   if (found) {
-    if (!Messenger::GetMinerInfoDSComm(bytes(dataStr.begin(), dataStr.end()), 0, entry))
-    {
+    if (!Messenger::GetMinerInfoDSComm(bytes(dataStr.begin(), dataStr.end()), 0,
+                                       entry)) {
       LOG_GENERAL(WARNING, "Messenger::GetMinerInfoDSComm failed");
       found = false;
     }
@@ -1287,8 +1287,8 @@ bool BlockStorage::GetMinerInfoDSComm(const uint64_t& dsBlockNum, MinerInfoDSCom
   return found;
 }
 
-bool BlockStorage::PutMinerInfoShards(const uint64_t& dsBlockNum, const MinerInfoShards& entry)
-{
+bool BlockStorage::PutMinerInfoShards(const uint64_t& dsBlockNum,
+                                      const MinerInfoShards& entry) {
   LOG_MARKER();
 
   bytes data;
@@ -1308,8 +1308,8 @@ bool BlockStorage::PutMinerInfoShards(const uint64_t& dsBlockNum, const MinerInf
   return true;
 }
 
-bool BlockStorage::GetMinerInfoShards(const uint64_t& dsBlockNum, MinerInfoShards& entry)
-{
+bool BlockStorage::GetMinerInfoShards(const uint64_t& dsBlockNum,
+                                      MinerInfoShards& entry) {
   LOG_MARKER();
   bool found = false;
 
@@ -1319,8 +1319,8 @@ bool BlockStorage::GetMinerInfoShards(const uint64_t& dsBlockNum, MinerInfoShard
     dataStr = m_minerInfoShardsDB->Lookup(dsBlockNum, found);
   }
   if (found) {
-    if (!Messenger::GetMinerInfoShards(bytes(dataStr.begin(), dataStr.end()), 0, entry))
-    {
+    if (!Messenger::GetMinerInfoShards(bytes(dataStr.begin(), dataStr.end()), 0,
+                                       entry)) {
       LOG_GENERAL(WARNING, "Messenger::GetMinerInfoShards failed");
       found = false;
     }
@@ -1674,7 +1674,8 @@ bool BlockStorage::ResetAll() {
            ResetDB(BLOCKLINK) & ResetDB(SHARD_STRUCTURE) &
            ResetDB(STATE_DELTA) & ResetDB(TEMP_STATE) &
            ResetDB(DIAGNOSTIC_NODES) & ResetDB(DIAGNOSTIC_COINBASE) &
-           ResetDB(STATE_ROOT) & ResetDB(PROCESSED_TEMP) & ResetDB(MINER_INFO_DSCOMM) & ResetDB(MINER_INFO_SHARDS);
+           ResetDB(STATE_ROOT) & ResetDB(PROCESSED_TEMP) &
+           ResetDB(MINER_INFO_DSCOMM) & ResetDB(MINER_INFO_SHARDS);
   }
 }
 
@@ -1698,7 +1699,8 @@ bool BlockStorage::RefreshAll() {
            RefreshDB(BLOCKLINK) & RefreshDB(SHARD_STRUCTURE) &
            RefreshDB(STATE_DELTA) & RefreshDB(TEMP_STATE) &
            RefreshDB(DIAGNOSTIC_NODES) & RefreshDB(DIAGNOSTIC_COINBASE) &
-           RefreshDB(STATE_ROOT) & RefreshDB(PROCESSED_TEMP) & RefreshDB(MINER_INFO_DSCOMM) & RefreshDB(MINER_INFO_SHARDS) &
+           RefreshDB(STATE_ROOT) & RefreshDB(PROCESSED_TEMP) &
+           RefreshDB(MINER_INFO_DSCOMM) & RefreshDB(MINER_INFO_SHARDS) &
            Contract::ContractStorage2::GetContractStorage().RefreshAll();
   }
 }

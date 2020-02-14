@@ -1659,8 +1659,7 @@ Json::Value LookupServer::GetPendingTxn(const string& tranID) {
   }
 }
 
-Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
-{
+Json::Value LookupServer::GetMinerInfo(const std::string& blockNum) {
   LOG_MARKER();
 
   if (!LOOKUP_NODE_MODE) {
@@ -1671,51 +1670,60 @@ Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
     const DSBlock& latest = m_mediator.m_dsBlockChain.GetLastBlock();
     const uint64_t requestedDSBlockNum = stoull(blockNum);
 
-    if (latest.GetHeader().GetBlockNum() < requestedDSBlockNum)
-    {
+    if (latest.GetHeader().GetBlockNum() < requestedDSBlockNum) {
       throw JsonRpcException(RPC_MISC_ERROR, "Requested data not found");
     }
 
     // For DS Committee
 
-    // Retrieve the minerInfoDSComm database entry for the nearest multiple of STORE_DS_COMMITTEE_INTERVAL
-    // Set the initial DS committee result to the public keys in the entry
-    const uint64_t initDSBlockNum = requestedDSBlockNum - (requestedDSBlockNum % STORE_DS_COMMITTEE_INTERVAL);
+    // Retrieve the minerInfoDSComm database entry for the nearest multiple of
+    // STORE_DS_COMMITTEE_INTERVAL Set the initial DS committee result to the
+    // public keys in the entry
+    const uint64_t initDSBlockNum =
+        requestedDSBlockNum -
+        (requestedDSBlockNum % STORE_DS_COMMITTEE_INTERVAL);
     MinerInfoDSComm minerInfoDSComm;
-    if (!BlockStorage::GetBlockStorage().GetMinerInfoDSComm(initDSBlockNum, minerInfoDSComm))
-    {
-      throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get DS committee miner info for block " + boost::lexical_cast<std::string>(initDSBlockNum));
+    if (!BlockStorage::GetBlockStorage().GetMinerInfoDSComm(initDSBlockNum,
+                                                            minerInfoDSComm)) {
+      throw JsonRpcException(
+          RPC_DATABASE_ERROR,
+          "Failed to get DS committee miner info for block " +
+              boost::lexical_cast<std::string>(initDSBlockNum));
     }
 
     // From the entry after that until the requested block
     uint64_t currDSBlockNum = initDSBlockNum;
-    while (currDSBlockNum < requestedDSBlockNum)
-    {
+    while (currDSBlockNum < requestedDSBlockNum) {
       currDSBlockNum++;
 
       // Retrieve the dsBlocks database entry for the current block number
-      const DSBlock& currDSBlock = m_mediator.m_dsBlockChain.GetBlock(currDSBlockNum);
+      const DSBlock& currDSBlock =
+          m_mediator.m_dsBlockChain.GetBlock(currDSBlockNum);
 
       // Add the public keys of the PoWWinners in that entry to the DS committee
-      for (const auto& winner : currDSBlock.GetHeader().GetDSPoWWinners())
-      {
+      for (const auto& winner : currDSBlock.GetHeader().GetDSPoWWinners()) {
         minerInfoDSComm.m_dsNodes.emplace_front(winner.first);
       }
-      
-      // Retrieve the minerInfoDSComm database entry for the current block number
+
+      // Retrieve the minerInfoDSComm database entry for the current block
+      // number
       MinerInfoDSComm tmp;
-      if (!BlockStorage::GetBlockStorage().GetMinerInfoDSComm(currDSBlockNum, tmp))
-      {
-        throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get DS committee miner info for block " + boost::lexical_cast<std::string>(currDSBlockNum));
+      if (!BlockStorage::GetBlockStorage().GetMinerInfoDSComm(currDSBlockNum,
+                                                              tmp)) {
+        throw JsonRpcException(
+            RPC_DATABASE_ERROR,
+            "Failed to get DS committee miner info for block " +
+                boost::lexical_cast<std::string>(currDSBlockNum));
       }
 
-      // Remove the public keys of the ejected nodes in that entry from the DS committee
-      for (const auto& ejected : tmp.m_dsNodesEjected)
-      {
-        auto entry = find(minerInfoDSComm.m_dsNodes.begin(), minerInfoDSComm.m_dsNodes.end(), ejected);
-        if (entry == minerInfoDSComm.m_dsNodes.end())
-        {
-          throw JsonRpcException(RPC_MISC_ERROR, "Failed to get DS committee miner info");
+      // Remove the public keys of the ejected nodes in that entry from the DS
+      // committee
+      for (const auto& ejected : tmp.m_dsNodesEjected) {
+        auto entry = find(minerInfoDSComm.m_dsNodes.begin(),
+                          minerInfoDSComm.m_dsNodes.end(), ejected);
+        if (entry == minerInfoDSComm.m_dsNodes.end()) {
+          throw JsonRpcException(RPC_MISC_ERROR,
+                                 "Failed to get DS committee miner info");
         }
         minerInfoDSComm.m_dsNodes.erase(entry);
       }
@@ -1725,9 +1733,12 @@ Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
 
     // Retrieve the minerInfo database entry for the requested DS block
     MinerInfoShards minerInfoShards;
-    if (!BlockStorage::GetBlockStorage().GetMinerInfoShards(requestedDSBlockNum, minerInfoShards))
-    {
-      throw JsonRpcException(RPC_DATABASE_ERROR, "Failed to get shards miner info for block " + boost::lexical_cast<std::string>(requestedDSBlockNum));
+    if (!BlockStorage::GetBlockStorage().GetMinerInfoShards(requestedDSBlockNum,
+                                                            minerInfoShards)) {
+      throw JsonRpcException(
+          RPC_DATABASE_ERROR,
+          "Failed to get shards miner info for block " +
+              boost::lexical_cast<std::string>(requestedDSBlockNum));
     }
 
     Json::Value _json;
@@ -1740,13 +1751,11 @@ Json::Value LookupServer::GetMinerInfo(const std::string& blockNum)
 
     // Record the shard sizes and public keys in the API response message
     _json["shards"] = Json::Value(Json::arrayValue);
-    for (const auto& shard : minerInfoShards.m_shards)
-    {
+    for (const auto& shard : minerInfoShards.m_shards) {
       Json::Value _jsonShard;
       _jsonShard["size"] = uint(shard.m_shardSize);
       _jsonShard["nodes"] = Json::Value(Json::arrayValue);
-      for (const auto& shardnode : shard.m_shardNodes)
-      {
+      for (const auto& shardnode : shard.m_shardNodes) {
         _jsonShard["nodes"].append(static_cast<string>(shardnode));
       }
       _json["shards"].append(_jsonShard);

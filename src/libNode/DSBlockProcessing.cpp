@@ -104,7 +104,8 @@ void Node::UpdateDSCommitteeComposition(DequeOfNode& dsComm,
   LOG_MARKER();
 
   MinerInfoDSComm dummy;
-  UpdateDSCommitteeCompositionCore(m_mediator.m_selfKey.second, dsComm, dsblock, dummy);
+  UpdateDSCommitteeCompositionCore(m_mediator.m_selfKey.second, dsComm, dsblock,
+                                   dummy);
 }
 
 void Node::UpdateDSCommitteeComposition(DequeOfNode& dsComm,
@@ -113,7 +114,8 @@ void Node::UpdateDSCommitteeComposition(DequeOfNode& dsComm,
   // Update the DS committee composition.
   LOG_MARKER();
 
-  UpdateDSCommitteeCompositionCore(m_mediator.m_selfKey.second, dsComm, dsblock, minerInfo);
+  UpdateDSCommitteeCompositionCore(m_mediator.m_selfKey.second, dsComm, dsblock,
+                                   minerInfo);
 }
 
 bool Node::VerifyDSBlockCoSignature(const DSBlock& dsblock) {
@@ -507,17 +509,13 @@ bool Node::ProcessVCDSBlocksMessage(const bytes& message,
 
   MinerInfoDSComm minerInfoDSComm;
   MinerInfoShards minerInfoShards;
-  if (LOOKUP_NODE_MODE)
-  {
-    for (const auto& shard : m_mediator.m_ds->m_shards)
-    {
+  if (LOOKUP_NODE_MODE) {
+    for (const auto& shard : m_mediator.m_ds->m_shards) {
       minerInfoShards.m_shards.push_back(MinerInfoShards::MinerInfoShard());
       minerInfoShards.m_shards.back().m_shardSize = shard.size();
-      for (const auto& node : shard)
-      {
+      for (const auto& node : shard) {
         const PubKey& pubKey = std::get<SHARD_NODE_PUBKEY>(node);
-        if (!Guard::GetInstance().IsNodeInShardGuardList(pubKey))
-        {
+        if (!Guard::GetInstance().IsNodeInShardGuardList(pubKey)) {
           minerInfoShards.m_shards.back().m_shardNodes.emplace_back(pubKey);
         }
       }
@@ -570,7 +568,8 @@ bool Node::ProcessVCDSBlocksMessage(const bytes& message,
   {
     std::lock_guard<mutex> g(m_mediator.m_mutexDSCommittee);
     UpdateDSCommitteeComposition(*m_mediator.m_DSCommittee,
-                                 m_mediator.m_dsBlockChain.GetLastBlock(), minerInfoDSComm);
+                                 m_mediator.m_dsBlockChain.GetLastBlock(),
+                                 minerInfoDSComm);
   }
 
   uint16_t lastBlockHash = 0;
@@ -717,13 +716,13 @@ bool Node::ProcessVCDSBlocksMessage(const bytes& message,
   m_mediator.m_blocklinkchain.SetBuiltDSComm(*m_mediator.m_DSCommittee);
 
   if (LOOKUP_NODE_MODE) {
-    if (!BlockStorage::GetBlockStorage().PutMinerInfoDSComm(dsblock.GetHeader().GetBlockNum(), minerInfoDSComm))
-    {
+    if (!BlockStorage::GetBlockStorage().PutMinerInfoDSComm(
+            dsblock.GetHeader().GetBlockNum(), minerInfoDSComm)) {
       LOG_GENERAL(WARNING, "BlockStorage::PutMinerInfoDSComm failed");
       return false;
     }
-    if (!BlockStorage::GetBlockStorage().PutMinerInfoShards(dsblock.GetHeader().GetBlockNum(), minerInfoShards))
-    {
+    if (!BlockStorage::GetBlockStorage().PutMinerInfoShards(
+            dsblock.GetHeader().GetBlockNum(), minerInfoShards)) {
       LOG_GENERAL(WARNING, "BlockStorage::PutMinerInfoShards failed");
       return false;
     }

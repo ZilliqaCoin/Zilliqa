@@ -209,7 +209,7 @@ class LookupServer : public Server,
     response = this->GetPendingTxn(request[0u].asString());
   }
   inline virtual void GetMinerInfoI(const Json::Value& request,
-                                  Json::Value& response) {
+                                    Json::Value& response) {
     response = this->GetMinerInfo(request[0u].asString());
   }
 

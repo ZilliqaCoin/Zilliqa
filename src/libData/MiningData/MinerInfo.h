@@ -18,9 +18,9 @@
 #ifndef ZILLIQA_SRC_LIBDATA_MININGDATA_MINERINFO_H_
 #define ZILLIQA_SRC_LIBDATA_MININGDATA_MINERINFO_H_
 
+#include <Schnorr.h>
 #include <deque>
 #include <vector>
-#include <Schnorr.h>
 
 /// Stores miner info (DS committee) for one DS epoch
 struct MinerInfoDSComm {
@@ -30,8 +30,7 @@ struct MinerInfoDSComm {
 
 /// Stores miner info (shards) for one DS epoch
 struct MinerInfoShards {
-  struct MinerInfoShard
-  {
+  struct MinerInfoShard {
     uint32_t m_shardSize;
     std::vector<PubKey> m_shardNodes;
   };

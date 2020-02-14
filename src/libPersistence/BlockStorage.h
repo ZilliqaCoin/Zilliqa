@@ -354,13 +354,15 @@ class BlockStorage : public Singleton<BlockStorage> {
   bool DeleteDiagnosticDataCoinbase(const uint64_t& dsBlockNum);
 
   /// Adds miner info (DS committee) to storage
-  bool PutMinerInfoDSComm(const uint64_t& dsBlockNum, const MinerInfoDSComm& entry);
+  bool PutMinerInfoDSComm(const uint64_t& dsBlockNum,
+                          const MinerInfoDSComm& entry);
 
   /// Retrieves the requested miner info (DS committee)
   bool GetMinerInfoDSComm(const uint64_t& dsBlockNum, MinerInfoDSComm& entry);
 
   /// Adds miner info (shards) to storage
-  bool PutMinerInfoShards(const uint64_t& dsBlockNum, const MinerInfoShards& entry);
+  bool PutMinerInfoShards(const uint64_t& dsBlockNum,
+                          const MinerInfoShards& entry);
 
   /// Retrieves the requested miner info (shards)
   bool GetMinerInfoShards(const uint64_t& dsBlockNum, MinerInfoShards& entry);

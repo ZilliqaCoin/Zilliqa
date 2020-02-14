@@ -8893,21 +8893,21 @@ bool Messenger::GetLookupSetCosigsRewardsFromSeed(
   return true;
 }
 
-bool Messenger::SetMinerInfoDSComm(bytes& dst, const unsigned int offset, const MinerInfoDSComm& minerInfo)
-{
+bool Messenger::SetMinerInfoDSComm(bytes& dst, const unsigned int offset,
+                                   const MinerInfoDSComm& minerInfo) {
   LOG_MARKER();
 
   ProtoMinerInfoDSComm result;
-  
-  for (const auto& dsnode : minerInfo.m_dsNodes)
-  {
-    ZilliqaMessage::ProtoMinerInfoDSComm::Node* protodsnode = result.add_dsnodes();
+
+  for (const auto& dsnode : minerInfo.m_dsNodes) {
+    ZilliqaMessage::ProtoMinerInfoDSComm::Node* protodsnode =
+        result.add_dsnodes();
     SerializableToProtobufByteArray(dsnode, *protodsnode->mutable_pubkey());
   }
 
-  for (const auto& dsnode : minerInfo.m_dsNodesEjected)
-  {
-    ZilliqaMessage::ProtoMinerInfoDSComm::Node* protodsnode = result.add_dsnodesejected();
+  for (const auto& dsnode : minerInfo.m_dsNodesEjected) {
+    ZilliqaMessage::ProtoMinerInfoDSComm::Node* protodsnode =
+        result.add_dsnodesejected();
     SerializableToProtobufByteArray(dsnode, *protodsnode->mutable_pubkey());
   }
 
@@ -8919,8 +8919,8 @@ bool Messenger::SetMinerInfoDSComm(bytes& dst, const unsigned int offset, const 
   return SerializeToArray(result, dst, offset);
 }
 
-bool Messenger::GetMinerInfoDSComm(const bytes& src, const unsigned int offset, MinerInfoDSComm& minerInfo)
-{
+bool Messenger::GetMinerInfoDSComm(const bytes& src, const unsigned int offset,
+                                   MinerInfoDSComm& minerInfo) {
   LOG_MARKER();
 
   if (offset >= src.size()) {
@@ -8955,20 +8955,21 @@ bool Messenger::GetMinerInfoDSComm(const bytes& src, const unsigned int offset, 
   return true;
 }
 
-bool Messenger::SetMinerInfoShards(bytes& dst, const unsigned int offset, const MinerInfoShards& minerInfo)
-{
+bool Messenger::SetMinerInfoShards(bytes& dst, const unsigned int offset,
+                                   const MinerInfoShards& minerInfo) {
   LOG_MARKER();
 
   ProtoMinerInfoShards result;
-  
-  for (const auto& shard : minerInfo.m_shards)
-  {
-    ZilliqaMessage::ProtoMinerInfoShards::Shard* protoshard = result.add_shards();
+
+  for (const auto& shard : minerInfo.m_shards) {
+    ZilliqaMessage::ProtoMinerInfoShards::Shard* protoshard =
+        result.add_shards();
     protoshard->set_shardsize(shard.m_shardSize);
-    for (const auto& shardnode : shard.m_shardNodes)
-    {
-      ZilliqaMessage::ProtoMinerInfoShards::Node* protoshardnode = protoshard->add_shardnodes();
-      SerializableToProtobufByteArray(shardnode, *protoshardnode->mutable_pubkey());
+    for (const auto& shardnode : shard.m_shardNodes) {
+      ZilliqaMessage::ProtoMinerInfoShards::Node* protoshardnode =
+          protoshard->add_shardnodes();
+      SerializableToProtobufByteArray(shardnode,
+                                      *protoshardnode->mutable_pubkey());
     }
   }
 
@@ -8980,8 +8981,8 @@ bool Messenger::SetMinerInfoShards(bytes& dst, const unsigned int offset, const 
   return SerializeToArray(result, dst, offset);
 }
 
-bool Messenger::GetMinerInfoShards(const bytes& src, const unsigned int offset, MinerInfoShards& minerInfo)
-{
+bool Messenger::GetMinerInfoShards(const bytes& src, const unsigned int offset,
+                                   MinerInfoShards& minerInfo) {
   LOG_MARKER();
 
   if (offset >= src.size()) {
