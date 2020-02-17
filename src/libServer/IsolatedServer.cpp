@@ -238,6 +238,8 @@ Json::Value IsolatedServer::CreateTransaction(const Json::Value& _json) {
                                                    ,
                                                    true, tx, txreceipt);
 
+    AccountStore::GetInstance().ProcessStorageRootUpdateBufferTemp();
+
     AccountStore::GetInstance().SerializeDelta();
     AccountStore::GetInstance().CommitTemp();
 
