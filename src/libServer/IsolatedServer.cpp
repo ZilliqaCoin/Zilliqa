@@ -243,6 +243,8 @@ Json::Value IsolatedServer::CreateTransaction(const Json::Value& _json) {
     AccountStore::GetInstance().SerializeDelta();
     AccountStore::GetInstance().CommitTemp();
 
+    AccountStore::GetInstance().InitTemp();
+
     TransactionWithReceipt twr(tx, txreceipt);
 
     bytes twr_ser;
