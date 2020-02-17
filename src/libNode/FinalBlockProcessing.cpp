@@ -619,16 +619,18 @@ bool Node::ProcessFinalBlockCore(const bytes& message, unsigned int offset,
                        << txBlock.GetHeader().GetBlockNum() << "] FRST");
 
   if (LOOKUP_NODE_MODE) {
-    LOG_STATE("[TXPCK] Size: " << message.size() << " BlockNum: "
-                               << txBlock.GetHeader().GetBlockNum());
+    LOG_STATE("[FBSIZE] Size: " << message.size() << " BlockNum: "
+                                << txBlock.GetHeader().GetBlockNum());
 
     uint64_t timeDiff = txBlock.GetTimestamp() -
                         m_mediator.m_txBlockChain.GetLastBlock().GetTimestamp();
-    LOG_STATE("[TXTIME] " << timeDiff);
-    cpp_dec_float_50 numTxns(txBlock.GetHeader().GetNumTxs());
-    numTxns = numTxns * 1000000;
 
-    LOG_STATE("[TXTPS] " << numTxns / timeDiff);
+    cpp_dec_float_50 td_float(timeDiff);
+    cpp_dec_float_50 numTxns(txBlock.GetHeader().GetNumTxs());
+    td_float = td_float / 1000000.0;
+
+    LOG_STATE("[FBTIME] " << td_float);
+    LOG_STATE("[FBTPS] " << numTxns / timeDiff);
   }
 
   // Verify the co-signature

@@ -246,6 +246,7 @@ bool Node::ProcessMicroBlockConsensusCore(const bytes& message,
                            << m_mediator.m_selfPeer.GetPrintableIPAddress()
                            << "][" << m_mediator.m_currentEpochNum << "]["
                            << m_myshardId << "] DONE");
+      LOG_STATE("[MITXN][" << m_microblock->GetHeader().GetNumTxs() << "]");
     }
 
     // shard
