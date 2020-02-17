@@ -247,6 +247,8 @@ bool Node::ProcessMicroBlockConsensusCore(const bytes& message,
                            << "][" << m_mediator.m_currentEpochNum << "]["
                            << m_myshardId << "] DONE");
       LOG_STATE("[MITXN][" << m_microblock->GetHeader().GetNumTxs() << "]");
+
+      LOG_STATE("[MIGAS][" << m_microblock->GetHeader().GetGasUsed() << "]");
     }
 
     // shard

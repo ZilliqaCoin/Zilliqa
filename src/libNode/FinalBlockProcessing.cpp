@@ -631,6 +631,8 @@ bool Node::ProcessFinalBlockCore(const bytes& message, unsigned int offset,
 
     LOG_STATE("[FBTIME] " << td_float);
     LOG_STATE("[FBTPS] " << numTxns / timeDiff);
+
+    LOG_STATE("[FBGAS] " << txBlock.GetHeader().GetGasUsed());
   }
 
   // Verify the co-signature
