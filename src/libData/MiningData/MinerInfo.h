@@ -31,8 +31,9 @@ struct MinerInfoDSComm {
 /// Stores miner info (shards) for one DS epoch
 struct MinerInfoShards {
   struct MinerInfoShard {
-    uint32_t m_shardSize;
+    uint32_t m_shardSize {};
     std::vector<PubKey> m_shardNodes;
+    MinerInfoShard() : m_shardSize(0) {}
   };
   std::vector<MinerInfoShard> m_shards;
 };
