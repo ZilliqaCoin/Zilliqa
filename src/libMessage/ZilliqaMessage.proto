@@ -664,6 +664,7 @@ message LookupGetDSBlockFromSeed
     uint64 lowblocknum            = 1;
     uint64 highblocknum           = 2;
     uint32 listenport             = 3;
+    bool includeminerinfo         = 4;
 }
 
 // From lookup nodes to new join lookup node or new join normal node.
@@ -678,6 +679,23 @@ message LookupSetDSBlockFromSeed
     Data data             = 1;
     ByteArray pubkey      = 2;
     ByteArray signature   = 3;
+}
+
+// From lookup nodes to new join lookup node.
+message LookupSetMinerInfoFromSeed
+{
+    message MinerInfo
+    {
+        ProtoMinerInfoDSComm minerinfodscomm = 1;
+        ProtoMinerInfoShards minerinfoshards = 2;
+    }
+    message Data
+    {
+        map<uint64, MinerInfo> minerinfoperds = 1;
+    }
+    Data data           = 1;
+    ByteArray pubkey    = 2;
+    ByteArray signature = 3;
 }
 
 // From new join lookup node or new join normal node to existing lookup node.

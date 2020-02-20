@@ -19,6 +19,7 @@
 
 #include <Schnorr.h>
 #include <boost/variant.hpp>
+#include <map>
 #include "common/BaseType.h"
 #include "common/MempoolEnum.h"
 #include "common/Serializable.h"
@@ -476,12 +477,11 @@ class Messenger {
   static bool SetLookupGetDSBlockFromSeed(bytes& dst, const unsigned int offset,
                                           const uint64_t lowBlockNum,
                                           const uint64_t highBlockNum,
-                                          const uint32_t listenPort);
-  static bool GetLookupGetDSBlockFromSeed(const bytes& src,
-                                          const unsigned int offset,
-                                          uint64_t& lowBlockNum,
-                                          uint64_t& highBlockNum,
-                                          uint32_t& listenPort);
+                                          const uint32_t listenPort,
+                                          const bool includeMinerInfo);
+  static bool GetLookupGetDSBlockFromSeed(
+      const bytes& src, const unsigned int offset, uint64_t& lowBlockNum,
+      uint64_t& highBlockNum, uint32_t& listenPort, bool& includeMinerInfo);
   static bool SetLookupSetDSBlockFromSeed(bytes& dst, const unsigned int offset,
                                           const uint64_t lowBlockNum,
                                           const uint64_t highBlockNum,
@@ -493,6 +493,14 @@ class Messenger {
                                           uint64_t& highBlockNum,
                                           PubKey& lookupPubKey,
                                           std::vector<DSBlock>& dsBlocks);
+  static bool SetLookupSetMinerInfoFromSeed(
+      bytes& dst, const unsigned int offset, const PairOfKey& lookupKey,
+      const std::map<uint64_t, std::pair<MinerInfoDSComm, MinerInfoShards>>&
+          minerInfoPerDS);
+  static bool GetLookupSetMinerInfoFromSeed(
+      const bytes& src, const unsigned int offset, PubKey& lookupPubKey,
+      std::map<uint64_t, std::pair<MinerInfoDSComm, MinerInfoShards>>&
+          minerInfoPerDS);
   static bool SetLookupGetTxBlockFromSeed(bytes& dst, const unsigned int offset,
                                           const uint64_t lowBlockNum,
                                           const uint64_t highBlockNum,
