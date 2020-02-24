@@ -282,6 +282,7 @@ def run():
 def start():
 	global Exclude_txnBodies
 	global Exclude_microBlocks
+	global Exclude_minerInfo
 	global STORAGE_PATH
 	if len(sys.argv) >= 2:
 		if os.path.isabs(sys.argv[1]):
