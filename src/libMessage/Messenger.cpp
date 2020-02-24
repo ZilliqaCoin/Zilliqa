@@ -9068,6 +9068,14 @@ bool Messenger::GetMinerInfoDSComm(const bytes& src, const unsigned int offset,
                                    MinerInfoDSComm& minerInfo) {
   LOG_MARKER();
 
+  minerInfo.m_dsNodes.clear();
+  minerInfo.m_dsNodesEjected.clear();
+
+  if (src.size() == 0) {
+    LOG_GENERAL(INFO, "Empty MinerInfoDSComm");
+    return true;
+  }
+
   if (offset >= src.size()) {
     LOG_GENERAL(WARNING, "Invalid data and offset, data size "
                              << src.size() << ", offset " << offset);
@@ -9081,9 +9089,6 @@ bool Messenger::GetMinerInfoDSComm(const bytes& src, const unsigned int offset,
     LOG_GENERAL(WARNING, "ProtoMinerInfoDSComm initialization failed");
     return false;
   }
-
-  minerInfo.m_dsNodes.clear();
-  minerInfo.m_dsNodesEjected.clear();
 
   for (const auto& protodsnode : result.dsnodes()) {
     PubKey pubkey;
@@ -9128,6 +9133,13 @@ bool Messenger::GetMinerInfoShards(const bytes& src, const unsigned int offset,
                                    MinerInfoShards& minerInfo) {
   LOG_MARKER();
 
+  minerInfo.m_shards.clear();
+
+  if (src.size() == 0) {
+    LOG_GENERAL(INFO, "Empty MinerInfoShards");
+    return true;
+  }
+
   if (offset >= src.size()) {
     LOG_GENERAL(WARNING, "Invalid data and offset, data size "
                              << src.size() << ", offset " << offset);
@@ -9141,8 +9153,6 @@ bool Messenger::GetMinerInfoShards(const bytes& src, const unsigned int offset,
     LOG_GENERAL(WARNING, "ProtoMinerInfoShards initialization failed");
     return false;
   }
-
-  minerInfo.m_shards.clear();
 
   for (const auto& protoshard : result.shards()) {
     MinerInfoShards::MinerInfoShard shard;
