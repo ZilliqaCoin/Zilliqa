@@ -4102,7 +4102,8 @@ bool Lookup::Execute(const bytes& message, unsigned int offset,
       &Lookup::ProcessForwardTxn,
       &Lookup::ProcessGetDSGuardNetworkInfo,
       &Lookup::ProcessSetHistoricalDB,
-      &Lookup::ProcessGetCosigsRewardsFromSeed};
+      &Lookup::ProcessGetCosigsRewardsFromSeed,
+      &Lookup::ProcessSetMinerInfoFromSeed};
 
   const unsigned char ins_byte = message.at(offset);
   const unsigned int ins_handlers_count =
