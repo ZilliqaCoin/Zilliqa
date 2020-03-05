@@ -108,11 +108,11 @@ namespace dev
 // #endif
         if (m_main.count(_h))
         {
-            if (m_main[_h].second > 0)
-            {
-                m_main[_h].second--;
-                return true;
-            }
+            m_main[_h].second = 0;
+            return true;
+        } else {
+            m_main[_h] = {"", 0};
+            return true;
         }
         return false;
     }
@@ -147,25 +147,51 @@ namespace dev
         m_aux[_h] = make_pair(_v.toBytes(), true);
     }
 
-    void MemoryDB::purge()
+    void MemoryDB::purge(std::vector<h256>& purged, bool haveMutex)
     {
-// #if DEV_GUARDED_DB
-        // WriteGuard l(x_this);
-        unique_lock<shared_timed_mutex> lock(x_this);
-// #endif
-        // purge m_main
-        for (auto it = m_main.begin(); it != m_main.end(); )
-            if (it->second.second)
-                ++it;
-            else
-                it = m_main.erase(it);
+        /// if called by member function where x_this is locked,
+        /// can be without the mutex
+        if (haveMutex) {
+            unique_lock<shared_timed_mutex> lock(x_this);
+            // purge m_main
+            for (auto it = m_main.begin(); it != m_main.end(); ) {
+                if (it->second.second) {
+                    ++it;
+                } else {
+                    // LOG_GENERAL(INFO, "purged: " << it->first.hex())
+                    purged.push_back(it->first);
+                    it = m_main.erase(it);
+                }
+            }
 
-        // purge m_aux
-        for (auto it = m_aux.begin(); it != m_aux.end(); )
-            if (it->second.second)
-                ++it;
-            else
-                it = m_aux.erase(it);
+            // purge m_aux
+            for (auto it = m_aux.begin(); it != m_aux.end(); ) {
+                if (it->second.second) {
+                    ++it;
+                } else {
+                    it = m_aux.erase(it);            
+                }
+            }
+        } else {
+            for (auto it = m_main.begin(); it != m_main.end(); ) {
+                if (it->second.second) {
+                    ++it;
+                } else {
+                    // LOG_GENERAL(INFO, "purged: " << it->first.hex())
+                    purged.push_back(it->first);
+                    it = m_main.erase(it);
+                }
+            }
+
+            // purge m_aux
+            for (auto it = m_aux.begin(); it != m_aux.end(); ) {
+                if (it->second.second) {
+                    ++it;
+                } else {
+                    it = m_aux.erase(it);            
+                }
+            }
+        }
     }
 
     h256Hash MemoryDB::keys() const

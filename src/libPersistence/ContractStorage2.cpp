@@ -277,6 +277,8 @@ bool ContractStorage2::FetchStateValue(const dev::h160& addr, const bytes& src,
     }
   }
 
+  delete it;
+
   set<string>::iterator isDeleted;
 
   uint32_t counter = 0;
@@ -367,6 +369,7 @@ void ContractStorage2::DeleteByPrefix(const string& prefix) {
       t_indexToBeDeleted.emplace(it->key().ToString());
     }
   }
+  delete it;
 }
 
 void ContractStorage2::DeleteByIndex(const string& index) {
@@ -594,6 +597,8 @@ void ContractStorage2::FetchStateDataForKey(map<string, bytes>& states,
     }
   }
 
+  delete it;
+
   if (temp) {
     for (auto it = states.begin(); it != states.end();) {
       if (t_indexToBeDeleted.find(it->first) != t_indexToBeDeleted.cend()) {
@@ -678,6 +683,8 @@ void ContractStorage2::FetchUpdatedStateValuesForAddress(
         }
       }
     }
+
+    delete it;
 
     auto r = m_indexToBeDeleted.lower_bound(address.hex());
     while (r != m_indexToBeDeleted.end() &&
