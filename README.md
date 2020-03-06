@@ -18,7 +18,7 @@ Zilliqa is a scalable smart contract platform that aims to tackle the congestion
 * If you’d like to use the interface with Zilliqa nodes to transfer ZIL and deploy/call smart contracts, see here: https://apidocs.zilliqa.com/.
 * If you’re interested in hacking on the Zilliqa code base, see the [Coding Guidelines](https://github.com/Zilliqa/Zilliqa/wiki/Coding-Guidelines).
 
-> **NOTE**: The `master` branch is not for production as development is currently being worked constantly, please use the `tag` releases if you wish to work on the version of Zilliqa client that is running live on the Zilliqa blockchain. (Current live version `tag` release is `v6.0.0`)
+> **NOTE**: The `master` branch is not for production as development is currently being worked constantly, please use the `tag` releases if you wish to work on the version of Zilliqa client that is running live on the Zilliqa blockchain. (Current live version `tag` release is `v6.1.1`)
 
 ## Zilliqa Mainnet
 
@@ -89,7 +89,7 @@ Build Zilliqa from the source:
 ```shell
 # download the lastest stable Zilliqa source code
 $ git clone git@github.com:Zilliqa/Zilliqa.git
-$ cd Zilliqa && git checkout tag/v6.1.0
+$ cd Zilliqa && git checkout tag/v6.1.1
 
 # build Zilliqa binary
 $ ./build.sh
@@ -121,7 +121,7 @@ $ git checkout master
 
 |          | Link(s) |
 |:---------|:-------|
-| **Development discussion (discord)** | <a href="https://discord.gg/8tpGXrB" target="_blank"><img src="https://img.shields.io/discord/370992535725932544.svg" /></a> |
+| **Development discussion (discord)** | <a href="https://discord.gg/XMRE9tt" target="_blank"><img src="https://img.shields.io/discord/370992535725932544.svg" /></a> |
 | **Bug report** | <a href="https://github.com/Zilliqa/zilliqa/issues" target="_blank"><img src="https://img.shields.io/github/issues/Zilliqa/zilliqa.svg" /></a> |
 | **Security contact** | `security` :globe_with_meridians: `zilliqa.com` |
 | **Security bug bounty** | https://bugcrowd.com/zilliqa |
